@@ -58,7 +58,7 @@ async def respond_defend(req: DefendSessionRequest) -> DefendResponse:
     if not settings.has_llm_key:
         raise HTTPException(
             status_code=503,
-            detail="AI Service unavailable: ANTHROPIC_API_KEY not configured.",
+            detail="AI Service unavailable: OPENROUTER_API_KEY not configured.",
         )
 
     # Count how many questions have been asked so far
