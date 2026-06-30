@@ -202,5 +202,5 @@ def _parse_evaluation(text: str) -> dict:
     return {
         "passed": bool(data["passed"]),
         "feedback": str(data.get("feedback", "")),
-        "score": int(data.get("score", 0)),
+        "score": max(0, min(100, int(data.get("score", 0)))),
     }

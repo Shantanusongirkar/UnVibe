@@ -6,7 +6,7 @@ from loguru import logger
 
 from app.config import get_settings
 from app.services.llm_client import llm, LLMClientError
-from app.services.prompt_manager import render_prompt
+from app.services.prompt_manager import render_prompt, strip_markdown_fence
 
 router = APIRouter(prefix="/generate", tags=["generate"])
 
@@ -59,6 +59,7 @@ async def generate_text(req: GenerateRequest) -> GenerateResponse:
         )
 
         text = await llm.generate_async(prompt=prompt)
+        text = strip_markdown_fence(text)
 
         # Estimate token count from response (rough: ~4 chars per token)
         estimated_tokens = max(1, len(text) // 4)

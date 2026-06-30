@@ -129,7 +129,7 @@ def _parse_quiz_response(text: str, topic: str, expected_count: int) -> dict:
 
         questions.append(Question(
             id=q.get("id", f"q-{i + 1}"),
-            question=q["question"],
+            question=q.get("question", ""),
             options=options,
             correct_option=q.get("correct_option", 0),
             explanation=q.get("explanation"),
