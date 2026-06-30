@@ -9,7 +9,7 @@ from loguru import logger
 
 from app.config import get_settings
 from app.services.llm_client import llm, LLMClientError
-from app.services.prompt_manager import render_prompt
+from app.services.prompt_manager import render_prompt, strip_markdown_fence
 
 router = APIRouter(prefix="/quiz", tags=["quiz"])
 
@@ -111,17 +111,7 @@ def _parse_quiz_response(text: str, topic: str, expected_count: int) -> dict:
     includes explanatory text before/after the JSON.
     """
     # Strip markdown code fences if present
-    text = text.strip()
-    if text.startswith("```"):
-        # Remove opening fence (possibly with language identifier)
-        first_newline = text.find("\n")
-        if first_newline != -1:
-            text = text[first_newline + 1:]
-        # Remove closing fence
-        if text.endswith("```"):
-            text = text[:-3].strip()
-        elif "```" in text:
-            text = text[: text.rindex("```")].strip()
+    text = strip_markdown_fence(text)
 
     data = json.loads(text)
 

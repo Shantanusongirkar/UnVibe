@@ -9,7 +9,7 @@ from loguru import logger
 
 from app.config import get_settings
 from app.services.llm_client import llm, LLMClientError
-from app.services.prompt_manager import render_prompt
+from app.services.prompt_manager import render_prompt, strip_markdown_fence
 
 router = APIRouter(prefix="/defend", tags=["defend"])
 
@@ -190,17 +190,8 @@ def _format_conversation(messages: list[DefendMessage]) -> str:
 
 def _parse_evaluation(text: str) -> dict:
     """Parse Claude's JSON evaluation response."""
-    text = text.strip()
-
     # Strip markdown code fences if present
-    if text.startswith("```"):
-        first_newline = text.find("\n")
-        if first_newline != -1:
-            text = text[first_newline + 1:]
-        if text.endswith("```"):
-            text = text[:-3].strip()
-        elif "```" in text:
-            text = text[: text.rindex("```")].strip()
+    text = strip_markdown_fence(text)
 
     data = json.loads(text)
 
